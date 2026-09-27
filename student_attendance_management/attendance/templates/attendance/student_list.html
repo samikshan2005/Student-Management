@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Students - Attendance System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Students</h2>
+    <a href="{% url 'student_add' %}" class="btn btn-primary">+ Add Student</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-6">
+        <input type="text" name="q" class="form-control" placeholder="Search by name, ID, course or email"
+               value="{{ query }}">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Search</button>
+    </div>
+</form>
+
+<div class="card p-3">
+    {% if students %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Course</th>
+                    <th>Sem</th>
+                    <th>Division</th>
+                    <th>Roll No.</th>
+                    <th>Attendance %</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.student_id }}</td>
+                    <td>
+                        <a href="{% url 'student_detail' student.pk %}">{{ student.name }}</a>
+                    </td>
+                    <td>{{ student.course }}</td>
+                    <td>{{ student.semester }}</td>
+                    <td>{{ student.division }}</td>
+                    <td>{{ student.roll_number }}</td>
+                    <td>
+                        {% if student.attendance_percentage is not None %}
+                            {{ student.attendance_percentage }}%
+                        {% else %}
+                            <span class="text-muted">No data</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'student_detail' student.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
+                        <a href="{% url 'student_edit' student.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'student_delete' student.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="text-muted mb-0">No students found. <a href="{% url 'student_add' %}">Add one now</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}

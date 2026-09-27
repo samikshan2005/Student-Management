@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Attendance Report - Attendance System{% endblock %}
+
+{% block content %}
+<h2 class="mb-3">Attendance Report</h2>
+
+<div class="card p-3">
+    {% if report_rows %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Name</th>
+                    <th>Total Days</th>
+                    <th>Present</th>
+                    <th>Absent</th>
+                    <th>Attendance %</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in report_rows %}
+                <tr>
+                    <td>{{ row.student.student_id }}</td>
+                    <td><a href="{% url 'student_detail' row.student.pk %}">{{ row.student.name }}</a></td>
+                    <td>{{ row.total }}</td>
+                    <td>{{ row.present }}</td>
+                    <td>{{ row.absent }}</td>
+                    <td>
+                        {% if row.percentage is not None %}
+                            <div class="progress" style="height: 20px; min-width: 100px;">
+                                <div class="progress-bar {% if row.percentage >= 75 %}bg-success{% elif row.percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
+                                     style="width: {{ row.percentage }}%;">
+                                    {{ row.percentage }}%
+                                </div>
+                            </div>
+                        {% else %}
+                            <span class="text-muted">No data</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="text-muted mb-0">No students found.</p>
+    {% endif %}
+</div>
+{% endblock %}
